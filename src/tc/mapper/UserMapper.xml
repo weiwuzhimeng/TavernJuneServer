@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!-- mapper代理中，namespace代表着xml所对应的那个接口的全类名 -->
+<!-- 四点相同：
+		1.xml和接口的输入参数类型相同
+		2.xml和接口的输出参数类型相同
+		3.接口方法名和xml的id相同
+		4.xml的namespace是接口的全类名
+ -->
+
+<mapper namespace="tc.mapper.UserMapper" >
+
+	<!-- 如果这里引用的是其他文件的map文件，resultMap参数需要加上namespace -->
+  	<select id="selectPasByName" parameterType="String" resultType="String">
+  		select password from user where username=#{username};
+  	</select>
+  	
+  	<select id="insertUser" parameterType="tc.po.User">
+  		insert user (username,password) values (#{username},#{password});
+  	</select>
+  	
+</mapper>

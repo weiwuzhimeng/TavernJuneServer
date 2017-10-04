@@ -25,6 +25,7 @@ public class ForumController {
 		System.out.println("*******"+forum.toString());
 		forumServiceImpl.dealUpload(forum);
 	}
+	
 	//处理论坛下载请求
 	@RequestMapping(value="push",method={RequestMethod.POST,RequestMethod.GET})
 	public @ResponseBody ForumData pushForum() throws Exception{

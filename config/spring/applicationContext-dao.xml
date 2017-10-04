@@ -48,6 +48,10 @@
 	<bean id="forumMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="tc.mapper.ForumMapper"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-	</bean> 
+	</bean>
+	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="tc.mapper.UserMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>  
 	
 </beans>
