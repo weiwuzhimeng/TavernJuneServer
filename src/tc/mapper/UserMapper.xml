@@ -20,4 +20,8 @@
   		insert user (username,password) values (#{username},#{password});
   	</select>
   	
+  	<select id="alertPicByName" parameterType="String">
+  		update user set picture=#{picture} where username = #{username};
+  	</select>
+  	
 </mapper>

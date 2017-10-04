@@ -4,3 +4,7 @@
 在新建mapper时，要注意两点：
 1、applicationContext-dao.xml下配置bean(mapper对象)
 2、sqlMapConfig.xml配置mapper.xml文件
+
+editItems.jsp用于文件上传
+forum.jsp用于论坛测试
+login.jsp用于登录注册测试
