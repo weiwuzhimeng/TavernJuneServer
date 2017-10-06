@@ -3,6 +3,7 @@ package tc.service.impl;
 import java.io.File;
 import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,8 @@ import tc.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
+	//日志
+	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserMapper userMapper;
@@ -29,7 +32,7 @@ public class UserServiceImpl implements UserService {
 		} else {
 			str = "用户名或密码错误";
 		}
-		System.out.println(str);
+		logger.info(str);
 		return str;
 	}
 
@@ -44,10 +47,10 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(password);
 			userMapper.insertUser(user);
 			str = "注册成功";
-			System.out.println(str + username);
+			logger.info(str + username);
 		} else {
 			str = "该用户已被注册";
-			System.out.println(str + username);
+			logger.info(str + username);
 		}
 		return str;
 	}
@@ -72,11 +75,11 @@ public class UserServiceImpl implements UserService {
 			
 			//注：此处应该校验，即向数据库中查询该用户的图片名称(修改后)是否是newFileName
 			str = "上传图片成功";
-			System.out.println(str);
+			logger.info(str);
 			return str;
 		}else{
 			str = "图片名称不合法或图片不存在";
-			System.out.println(str);
+			logger.info(str);
 			return str;
 		}
 	}

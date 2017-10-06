@@ -22,7 +22,6 @@ public class ForumController {
 	//处理上传论坛请求
 	@RequestMapping(value="upload",method={RequestMethod.POST,RequestMethod.GET})
 	public void uploadForum(@RequestBody Forum forum) throws Exception{
-		System.out.println("*******"+forum.toString());
 		forumServiceImpl.dealUpload(forum);
 	}
 	

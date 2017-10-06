@@ -41,7 +41,7 @@ function responseJson(){
 </head>
 <body>
 	<form method="post" 
-		action="${pageContext.request.contextPath }/user/register.action">
+		action="${pageContext.request.contextPath }/user/login.action">
 		用户账号：<input type="text" name="username" /><br/> 
 		用户密码 ：<input type="password" name="password" /><br/> 
 			<input type="submit"value="提交"/>
