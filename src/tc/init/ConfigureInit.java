@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import tc.controller.UserConnectFrontController;
 
+//初始化tomcat的一些配置，这里初始化的是用户tcp连接程序
 public class ConfigureInit implements ServletContextListener {
 	
 	private static final Logger logger = Logger.getLogger(ConfigureInit.class);
