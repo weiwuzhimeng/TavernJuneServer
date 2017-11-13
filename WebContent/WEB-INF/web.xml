@@ -24,7 +24,10 @@
 	</listener>
 	<!-- 监听器 -->
 	<listener>
-		<listener-class>tc.init.ConfigureInit</listener-class>
+		<listener-class>tc.init.UserConnectInit</listener-class>
+	</listener>
+	<listener>
+		<listener-class>tc.init.GameInit</listener-class>
 	</listener>
 
 

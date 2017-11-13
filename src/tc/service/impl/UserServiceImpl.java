@@ -28,11 +28,11 @@ public class UserServiceImpl implements UserService {
 		// 判断用户名或密码是否正确(需要前端app帮助校验：用户名和密码不能为空)
 		String databasePas = userMapper.selectPasByName(username);
 		if (password.equals(databasePas)) {
-			str = "登陆成功";
+			str = "登录成功";
 		} else {
 			str = "用户名或密码错误";
 		}
-		logger.info(str);
+		logger.info(str+"，稍后将此str返回给客户端**********************************************************");
 		return str;
 	}
 
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 		String originalFilename = picFile.getOriginalFilename();
 		//上传图片
 		if (picFile != null && originalFilename != null && originalFilename.length() > 0) {
-			// 存储图片的物理路径,需要转义
+			// 存储图片的物理路径,需要转义(注：服务器没有F盘，应该改为C盘)
 			String pic_path = "F:\\EclipseWeb\\picLinshi\\";
 			// 新的图片名称
 			String picture = UUID.randomUUID() + originalFilename.substring(originalFilename.lastIndexOf("."));

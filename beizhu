@@ -1,10 +1,10 @@
 桌游吧
 
-注***：
-在新建mapper时，要注意两点：
-1、applicationContext-dao.xml下配置bean(mapper对象)
-2、sqlMapConfig.xml配置mapper.xml文件
+目前待解决的问题：
+1、现在的业务层是对的书写格式吗
+2、spring管理cro和service层
+3、get请求乱码
+4、没有解决客户端意外断开连接，服务端相应释放资源的问题
 
-editItems.jsp用于文件上传
-forum.jsp用于论坛测试
-login.jsp用于登录注册测试
+注：
+1、传war包时，要从本机向远程传，而不是在远程内部操作

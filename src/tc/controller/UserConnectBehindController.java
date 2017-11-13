@@ -1,5 +1,6 @@
 package tc.controller;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,11 +18,11 @@ import tc.util.JsonData;
 public class UserConnectBehindController implements Runnable{
 	
 	private static final Logger logger = Logger.getLogger(UserConnectBehindController.class);
-	Socket socket = null;
-	ObjectInputStream ois = null;
-	ObjectOutputStream oos = null;
+	Socket socket;
+	ObjectInputStream ois;
+	ObjectOutputStream oos;
 	//Map<String, UserConnect> usersMap = null;
-	UserConnect uc = null;
+	UserConnect uc;
 	boolean clientIsRead = false;
 	
 	public UserConnectBehindController(){
@@ -46,12 +47,15 @@ public class UserConnectBehindController implements Runnable{
 				logger.info("客户端发送的消息是："+str);
 				JSONObject jsonObject = new JSONObject(str);
 				String msgType = (String) jsonObject.get("msgType");
+				String adress = socket.getInetAddress().getHostAddress(); //用户ip地址
 				
 				switch(msgType){
 					//这里根据请求类型返回消息
 					case "#进#入#游#戏":
-						JSONObject jsonObject2 = JsonData.createJsonObject("main", "#允#许#游#戏");
-						oos.writeObject(jsonObject2.toString());
+						logger.info(adress+"已经进入游戏");
+						break;
+					case "#退#出#游#戏":
+						logger.info(adress+"已经退出游戏");
 						break;
 				}
 			}
@@ -59,6 +63,8 @@ public class UserConnectBehindController implements Runnable{
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.info("客户端断开了连接，随后会释放该客户端的资源**************************************");
+			uc.closeSource(); 
 		}catch (JSONException e) {
 			e.printStackTrace();
 		}

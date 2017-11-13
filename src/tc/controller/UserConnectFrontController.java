@@ -24,13 +24,14 @@ public class UserConnectFrontController extends Thread{
 
 	@Override
 	public void run() {
-		logger.error("连接开始啦。。。");
 		serverIsStart = true;
+		logger.info("总连接服务端已启动");
 		try {
 			ServerSocket ss = new ServerSocket(Configure.USER_CONNECT_PORT);
 			
 			while(serverIsStart){
 				Socket socket = ss.accept();
+				logger.info(socket.getInetAddress().getHostAddress()+"已连接总tcp");
 				UserConnect uc = new UserConnect(socket);
 				UserConnectBehindController ucbc = new UserConnectBehindController(uc);
 				new Thread(ucbc).start();
