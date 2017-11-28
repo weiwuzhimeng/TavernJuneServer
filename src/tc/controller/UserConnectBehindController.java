@@ -1,18 +1,15 @@
 package tc.controller;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import tc.po.UserConnect;
-import tc.util.JsonData;
 
 //用户Tcp连接的后端控制器(用于将用户的请求分配给相应的业务层)
 public class UserConnectBehindController implements Runnable{

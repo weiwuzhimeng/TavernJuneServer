@@ -1,9 +1,12 @@
 package tc.util;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
 
 public class JsonData {
 
@@ -51,9 +54,9 @@ public class JsonData {
 		try {
 			jsonObject.put("msgType", msgType);
 			jsonObject.put("msg1", msg1);
-			// 此处最好动态设置
-			jsonObject.put("msg2", list.get(0));
-			jsonObject.put("msg3", list.get(1));
+			//
+			JSONArray jsonArray = JSONArray.fromObject(list);
+			jsonObject.put("msg2", jsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -85,15 +88,35 @@ public class JsonData {
 		return jsonObject;
 	}
 
-	public static JSONObject createJsonObject7(String msgType, String msg1, ArrayList<String> list) {
+	public static JSONObject createJsonObject7(String msgType,String str,Map<String, String> userHeroMap) {
 		JSONObject jsonObject = new JSONObject();
 		try {
+			//数据类型
 			jsonObject.put("msgType", msgType);
-			jsonObject.put("msg1", msg1);
-			// 此处最好动态设置
-			jsonObject.put("msg2", list.get(0));
-			jsonObject.put("msg3", list.get(1));
-			jsonObject.put("msg4", list.get(2));
+			//msg1
+			jsonObject.put("msg1", str);
+			//msg2
+			JSONObject jsonObject2 = JSONObject.fromObject(userHeroMap);
+			jsonObject.put("msg2", jsonObject2);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
+	public static JSONObject createJsonObject8(String msgType,String str,ArrayList<String> list,Map<String, String> userHeroMap) {
+		JSONObject jsonObject = new JSONObject();
+		try {
+			//数据类型
+			jsonObject.put("msgType", msgType);
+			//msg1
+			jsonObject.put("msg1", str);
+			//msg2
+			JSONArray jsonArray = JSONArray.fromObject(list);
+			jsonObject.put("msg2", jsonArray);
+			//msg3
+			JSONObject jsonObject2 = JSONObject.fromObject(userHeroMap);
+			jsonObject.put("msg3", jsonObject2);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

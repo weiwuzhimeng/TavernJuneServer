@@ -1,15 +1,10 @@
 package tc.controller;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 
 import tc.configure.Configure;
 import tc.po.UserConnect;
@@ -27,6 +22,7 @@ public class UserConnectFrontController extends Thread{
 		serverIsStart = true;
 		logger.info("总连接服务端已启动");
 		try {
+			@SuppressWarnings("resource")
 			ServerSocket ss = new ServerSocket(Configure.USER_CONNECT_PORT);
 			
 			while(serverIsStart){

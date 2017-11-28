@@ -1,5 +1,7 @@
 package tc.init;
 
+import java.util.Date;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -21,6 +23,21 @@ public class UserConnectInit implements ServletContextListener {
 			userConnectController.start();
 			logger.info("总tcp连接线程已开起");
 		}
+		
+		//测试程序是否还在运行
+		new Thread(){
+			public void run(){
+				logger.info("******【监控服务端是否在运行的程序已经开启】******");
+				try {
+					while(true){
+						Thread.sleep(1000*60*60); //每小时输出一次
+						logger.info("【当前时间是：】"+new Date());
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	@Override
