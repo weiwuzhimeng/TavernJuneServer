@@ -104,7 +104,7 @@ public class JsonData {
 		return jsonObject;
 	}
 	
-	public static JSONObject createJsonObject8(String msgType,String str,ArrayList<String> list,Map<String, String> userHeroMap) {
+	public static JSONObject createJsonObject8(String msgType,String str,Map<String, String> userHeroMap,ArrayList<String> list) {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			//数据类型
@@ -112,11 +112,11 @@ public class JsonData {
 			//msg1
 			jsonObject.put("msg1", str);
 			//msg2
-			JSONArray jsonArray = JSONArray.fromObject(list);
-			jsonObject.put("msg2", jsonArray);
-			//msg3
 			JSONObject jsonObject2 = JSONObject.fromObject(userHeroMap);
-			jsonObject.put("msg3", jsonObject2);
+			jsonObject.put("msg2", jsonObject2);
+			//msg3
+			JSONArray jsonArray = JSONArray.fromObject(list);
+			jsonObject.put("msg3", jsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
