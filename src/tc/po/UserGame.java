@@ -128,7 +128,6 @@ public class UserGame extends UserConnect {
 				ObjectOutputStream oos1 = ug.getOos();
 				oos1.writeObject(jsonObject.toString());
 				logger.info("广播的内容是(消息相同):"+jsonObject+"使用的oos输入日志测试:"+oos1.hashCode());
-				System.out.println("当前对象的sortedHeros："+sortedHeros);
 			}
 		} catch (IOException e) {
 			guList.remove(this);
@@ -166,14 +165,32 @@ public class UserGame extends UserConnect {
 		}
 	}
 	
+	public void closeSource(){
+		try {
+			if (ois != null)
+				ois.close();
+				logger.info(this.getUsername()+"的ois清理完毕");
+			if (oos != null)
+				oos.close();
+			logger.info(this.getUsername()+"的oos清理完毕");
+			if (socket != null)
+				socket.close();
+			logger.info(this.getUsername()+"的socket清理完毕");
+		} catch (IOException e) {
+			e.printStackTrace();
+			logger.info("清理资源失败！");
+		}
+	}
+	
+	//老版本关闭资源，目前无用
 	//关闭资源，设为同步函数的原因：避免在点击取消匹配时，还没释放完毕，其他玩家进到集合中，集合达到正确值，然后进入游戏
-	public synchronized boolean closeSource() { 
+	public synchronized boolean closeSourceOld() { 
 		//释放guList资源
 		if(guList.contains(this)){
 			guList.remove(this); //将此客户端从socket连接集合移除
 			logger.info("guList移除："+this+"成功，当前guList为："+guList);
 			if(guList.size()==0){
-				new GameServiceImpl().cleanSource();
+				new GameServiceImpl().closeSource();
 			}
 		}else{
 			logger.info(socket.getInetAddress().getHostAddress()+":guList移除连接失败，因为guList中没有这个连接");

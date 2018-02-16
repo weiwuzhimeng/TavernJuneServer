@@ -52,14 +52,25 @@ public class GameFrontController extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			//这种暴力的清空方式(有一个客户端断开，就清空整个集合)，只是为了目前的测试
+			//日后需要完善
+			new GameTable().closeSource();
+			logger.info("GameFrontController的链表已经清空");
 		} finally {
-			try {
-				ss.close();
-				logger.error("这里是fanlly，已经关闭了ss");
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				logger.error("ss关闭失败");
-			}
+//			try {
+//				ss.close();
+//				logger.error("这里是fanlly，已经关闭了ss");
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//				logger.error("ss关闭失败");
+//			}
 		}
+	}
+	
+	//这种暴力的清空方式(有一个客户端断开，就清空整个集合)，只是为了目前的测试
+	//日后需要完善
+	public void closeSource(){
+		ll.clear();
+		logger.info("释放后的ll："+ll);
 	}
 }

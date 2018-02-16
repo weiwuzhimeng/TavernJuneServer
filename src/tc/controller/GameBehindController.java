@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import tc.po.GameTable;
 import tc.po.UserGame;
 import tc.service.impl.GameServiceImpl;
 
@@ -38,24 +39,16 @@ public class GameBehindController implements Runnable {
 
 	@Override
 	public void run() {
-		logger.info("当前sortedHeros16："+sortedHeros+"，"+sortedHeros.hashCode());
 		gameServiceImpl = new GameServiceImpl(ug); //初始化业务层
-		logger.info("当前sortedHeros17："+sortedHeros+"，"+sortedHeros.hashCode());
 		boolean clientIsRead = true;
-		logger.info("当前sortedHeros18："+sortedHeros+"，"+sortedHeros.hashCode());
 		logger.info(socket.getInetAddress().getHostAddress()+"已经开启数据读取");
 		try {
-			logger.info("当前sortedHeros19："+sortedHeros+"，"+sortedHeros.hashCode());
 			while (clientIsRead) {
-				logger.info("当前sortedHeros20："+sortedHeros+"，"+sortedHeros.hashCode());
 				String str = (String) ois.readObject();
-				logger.info("当前sortedHeros21："+sortedHeros+"，"+sortedHeros.hashCode());
 				logger.info("[这里是游戏服务端]"+socket.getInetAddress().getHostAddress()+"发送的消息是："+str+"*****************");
 				//JSONObject jsonObject = new JSONObject(str);
 				JSONObject jsonObject = JSONObject.fromObject(str);
-				logger.info("当前sortedHeros22："+sortedHeros+"，"+sortedHeros.hashCode());
 				String msgType = (String) jsonObject.get("msgType");
-				logger.info("当前sortedHeros23："+sortedHeros+"，"+sortedHeros.hashCode());
 				logger.info(socket.getInetAddress().getHostAddress()+"请求的消息类型是："+msgType);
 				
 				switch(msgType){
@@ -82,12 +75,17 @@ public class GameBehindController implements Runnable {
 						gameServiceImpl.dealHeroAction();
 						break;
 					case "#回#合#结#束":
-						logger.info("当前sortedHeros24："+sortedHeros+"，"+sortedHeros.hashCode());
 						gameServiceImpl.dealRoundOver(jsonObject);
-						logger.info("当前sortedHeros25："+sortedHeros+"，"+sortedHeros.hashCode());
 						break;
-					case "#退#出#游#戏":
-						ug.closeSource(); //资源释放，待解决
+					case "#发#言#结#束":
+						gameServiceImpl.dealSpeakOver();
+						break;
+					case "#投#票#结#束":
+						String choosedName = (String) jsonObject.get("msg1"); //choosedName表示被他人投票的用户名
+						gameServiceImpl.dealVoteOver(choosedName); 
+						break;
+					case "#本#局#结#束":
+						new GameTable().closeSource(); //正常退出
 						break;
 					default:
 						logger.info("msgType有误");
@@ -97,9 +95,9 @@ public class GameBehindController implements Runnable {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
-			logger.info(socket.getInetAddress().getHostAddress()+":断开了连接，随后会释放该客户端的资源********************");
-			ug.closeSource();
+			//e.printStackTrace();
+			logger.info("[游戏连接]:"+ug.getUsername()+"断开了连接，随后会进行游戏方面的资源释放(全部释放)");
+			new GameTable(guList).closeSource(); //异常退出(这里必须要传入guList，否则无法获取guList)
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

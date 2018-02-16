@@ -102,7 +102,7 @@ public class HeroManager {
 				sortedHeros.add(i, "强盗");
 				break;
 			case 6:
-				sortedHeros.add(i, "捣蛋鬼 ");
+				sortedHeros.add(i, "捣蛋鬼");
 				break;
 			case 7:
 				sortedHeros.add(i, "女巫");
@@ -116,6 +116,12 @@ public class HeroManager {
 		}
 		logger.info("映射完的英雄集合是：" + sortedHeros);
 		return sortedHeros;
+	}
+	
+	//清理资源
+	public void closeSource(){
+		herosId.clear();
+		logger.info("释放后的herosId："+herosId);
 	}
 
 	public static void main(String[] args) {

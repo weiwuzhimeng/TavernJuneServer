@@ -122,4 +122,33 @@ public class JsonData {
 		}
 		return jsonObject;
 	}
+	
+	public static JSONObject createJsonObject8(String msgType,short[] buffer){
+		JSONObject jsonObject = new JSONObject();
+		try {
+			//数据类型
+			jsonObject.put("msgType", msgType);
+			//msg1
+			jsonObject.put("msg1", buffer);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
+	public static JSONObject createJsonObject9(String msgType,String msg1,String msg2,String msg3){
+		JSONObject jsonObject = new JSONObject();
+		try {
+			//数据类型
+			jsonObject.put("msgType", msgType);
+			//msg1
+			jsonObject.put("msg1", msg1);
+			jsonObject.put("msg2", msg2);
+			jsonObject.put("msg3", msg3);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
 }

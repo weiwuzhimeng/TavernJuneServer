@@ -8,7 +8,9 @@ import org.apache.log4j.Logger;
 
 import net.sf.json.JSONObject;
 import tc.controller.GameBehindController;
+import tc.controller.GameFrontController;
 import tc.po.UserGame;
+import tc.util.HeroManager;
 import tc.util.JsonData;
 
 public class GameTable implements Runnable{
@@ -27,6 +29,8 @@ public class GameTable implements Runnable{
 	public int usernamesId; //usernames角标
 	public int arrangeOver; //完毕(多用途)的人数
 
+	public GameTable(){} //方便清理资源，而不用传入集合
+	
 	public GameTable(ArrayList<UserGame> guList){
 		this.guList = guList;
 	}
@@ -58,5 +62,29 @@ public class GameTable implements Runnable{
 		ug.sendMsgToOther(jsonObject);
 	}
 	
-//	public void 
+	//在总干清理资源(目前的问题：已经清理一遍之后，其他玩家退出会重新清理，造成重复)
+	public void closeSource(){
+		logger.info("guList："+guList);
+		for(int i=0; i<guList.size(); i++){
+			UserGame ug = guList.get(i);
+			ug.closeSource();
+		}
+		logger.info("[UserGame全部关闭socket流完毕]");
+		
+		chooseType = 0;
+		usernamesId = 0;
+		arrangeOver = 0;
+		logger.info("[3个计数器清0完毕]");
+		
+		playerHeros.clear();
+		publicHeros.clear();
+		sortedHeros.clear();
+		usernames.clear();
+		userHeroMap.clear();
+		guList.clear();
+		new HeroManager().closeSource(); //之所以在这强制清理，是因为怕遇到突发情况，无法清理到它
+		new GameFrontController().closeSource();
+		logger.info("[8个集合(包括heroId和ll)清理完毕]");
+		logger.info("清理之后的8大集合："+"，[playerHeros]:"+playerHeros+"，[publicHeros]:"+publicHeros+"，[sortedHeros]:"+sortedHeros+"，[usernames]:"+usernames+"，[userHeroMap]:"+userHeroMap+"，[guList]:"+guList);
+	}
 }

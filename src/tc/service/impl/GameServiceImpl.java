@@ -23,8 +23,8 @@ public class GameServiceImpl {
 	ArrayList<UserGame> guList; //socket集合 
 	ArrayList<String> usernames; //用户名集合
 	Map<String, String> userHeroMap; //公共牌+玩家私有
-	ArrayList<String> playerHeros; //1.身份为狼的玩家的用户名集合
-	ArrayList<String> publicHeros; //1.所有英雄的集合公共+私有(用于帮助生成sortedHeros)  2.公共英雄集合
+	ArrayList<String> playerHeros; //1.身份为狼的玩家的用户名集合     2.装载最后确定的得票数最高的玩家的用户名集合(因为可能几人并列票数最高)
+	ArrayList<String> publicHeros; //1.所有英雄的集合公共+私有(用于帮助生成sortedHeros)  2.公共英雄集合	  3.玩家投票选择的用户名集合	
 	ArrayList<String> sortedHeros; //1.用于生成map集合  2.所有英雄排序后的集合
 
 	GameTable gameTable;
@@ -157,8 +157,10 @@ public class GameServiceImpl {
 			logger.info("待排序的publicHeros(传入sortedHeros前)"+publicHeros);
 			
 			/*
-			 * this.sortedHeros = new HeroManager().heroSort(publicHeros);
-			 * 错误原因：this.sortedHeros原本指向的是公共资源(线程共享资源)，但是被sortHerosModel赋值后，this.sortedHeros这个引用就指向了一个新对象(sortHerosModel对象)
+			 * ArrayList<String> sortedHerosModel = new HeroManager().heroSort(publicHeros);
+			 * this.sortedHeros = sortedHerosModel;
+			 * 错误原因：this.sortedHeros原本指向的是公共资源(线程共享资源:GameTable中的sortedHeros)，但是被sortHerosModel赋值后，this.sortedHeros这个引用就指向了一个新对象(GameTable中的publicHeros)
+			 * 而修改后的代码，并没有修改引用，this.sortedHeros指向的仍是GameTable中的sortedHeros
 			 * */
 			//修改的代码
 			ArrayList<String> sortedHerosModel = new HeroManager().heroSort(publicHeros);
@@ -183,25 +185,40 @@ public class GameServiceImpl {
 	
 	
 
-	// 处理回合结束   ？？？？问题map集合没有角标
+	// 处理回合结束 
 	public void dealRoundOver(JSONObject jsonObject) {
-		logger.info("当前sortedHeros5："+sortedHeros+"，"+sortedHeros.hashCode());
 		// 提取json数据
 		String heroname = (String) jsonObject.get("msg1");
-		logger.info("当前sortedHeros6："+sortedHeros+"，"+sortedHeros.hashCode());
 		switch (heroname) {
 		case "幽灵":
-			//机制复杂，暂不处理
+			String wantedHero = (String) jsonObject.get("msg2"); //想要变成的英雄名
+			String ghostPlayer = (String) jsonObject.get("msg5"); //幽灵玩家的用户名    
+			if(ghostPlayer==null || ghostPlayer.equals("")){
+				logger.error("幽灵所属玩家的用户名为null或空");
+			}
+			logger.info("英雄为幽灵的玩家的用户名："+ghostPlayer);
+			if(wantedHero.contains("狼")){
+				playerHeros.add(ghostPlayer);
+				logger.info("幽灵执行后，新的[playerHeros]："+playerHeros);
+			}
+			String hero1 = (String) jsonObject.get("msg3");
+			String hero2 = (String) jsonObject.get("msg4");
+			userHeroMap.put(ghostPlayer, wantedHero);  //更新幽灵玩家的英雄
+			logger.info("[幽灵]更新完的map："+userHeroMap);
+			//由于wantedHero以"幽灵"开头，所以需要截掉"幽灵"
+			String wantedHero2 = wantedHero.substring(2);
+			//1.没有狼人  2.狼群的处理
+			JSONObject ghostJSON = JsonData.createJsonObject9("#回#合#结#束", wantedHero2, hero1, hero2);
+			logger.info("幽灵已经开始作为："+wantedHero+"进行操作了");
+			dealRoundOver(ghostJSON);
 			break;
 		case "狼群":
-			logger.info("当前sortedHeros7："+sortedHeros+"，"+sortedHeros.hashCode());
 			//狼群都回合结束完毕，再进行向下广播进行回合的英雄
 			gameTable.usernamesId++;
-			logger.info("当前sortedHeros8："+sortedHeros+"，"+sortedHeros.hashCode());
+			logger.info("当前usernamesId："+gameTable.usernamesId);
+			logger.info("case 狼群 中的playerHeros："+playerHeros);
 			if(gameTable.usernamesId == playerHeros.size()){ 
-				logger.info("当前sortedHeros9："+sortedHeros+"，"+sortedHeros.hashCode());
 				gameTable.usernamesId=0;
-				logger.info("当前sortedHeros10："+sortedHeros+"，"+sortedHeros.hashCode());
 				heroSort();
 			}
 			break;
@@ -257,13 +274,79 @@ public class GameServiceImpl {
 		case "失眠者":
 			//服务端不需操作
 			break;
+		case "狼人":
+			break;
+		case "皮匠":
+			break;
 		default:
 			logger.info("没有这个英雄");
 			break;
 		}
 		if(!heroname.equals("狼群")){
-			heroSort();
+			if(!heroname.equals("幽灵")){
+				heroSort();
+			}
 		}
+	}
+	
+	//处理发言结束
+	public void dealSpeakOver(){
+		//usernamesId用户名集合的角标，用于遍历获取用户名
+		gameTable.usernamesId++; //usernamesId也表示已经有多少人发言完毕
+		int index = gameTable.usernamesId % Configure.PLAYER_COUNT;
+		if(index == 0){ //每当index归0，就表示一轮发言结束
+			gameTable.arrangeOver++; //arrangeOver表示已经进行多少轮发言
+		}
+		if(gameTable.arrangeOver == 2){ //规定进行2轮发言
+			//发言结束后，进行#开#始#投#票
+			initCounter();
+			JSONObject vote = JsonData.createJsonObject5("#开#始#投#票", "");
+			ug.sendMsgToOther(vote);
+			publicHeros.clear(); //以防万一，先清空一下
+			playerHeros.clear(); //装载最后确定的得票数最高的玩家的用户名集合(因为可能几人并列票数最高)
+			logger.info("清理后的publicHeros："+publicHeros);
+			logger.info("清理后的playerHeros："+playerHeros);
+			return;
+		}
+		String username = usernames.get(index); //获取用户名，用于广播发言
+		JSONObject speak = JsonData.createJsonObject5("#开#始#发#言", username);
+		ug.sendMsgToOther(speak);
+	}
+	
+	//处理投票结束
+	public void dealVoteOver(String choosedName){
+		publicHeros.add(choosedName); //添加投票选择的用户数
+		logger.info("添加投票用户后的publicHeros："+publicHeros);
+		if(publicHeros.size() == Configure.PLAYER_COUNT){ //所有玩家都投票完毕
+			logger.info("publicHeros.size():"+publicHeros.size()+"，所有玩家投票结束，开始计算票数最大者");
+			int max = -1; //默认最大数为-1，表示当前某玩家的最大票数
+			logger.info("测试一下新程序");
+			for(int i=0; i<publicHeros.size(); i++){ //遍历用户名
+				choosedName = publicHeros.get(i); //获得用户名
+				logger.info("当前choosedName："+choosedName);
+				if(choosedName.equals("#")){ //当前的用户名为null，则读取下一个
+					continue;
+				}
+				int temp = Collections.frequency(publicHeros, choosedName); //获得choosedName在集合中出现的频率
+				logger.info("当前temp："+temp);
+				Collections.replaceAll(publicHeros, choosedName, "#"); //将所有choosedName换成null，避免之后重复判断
+				logger.info("Collections.replaceAll后的publicHeros："+publicHeros);
+				if(temp > max){ //临时值大于最大值
+					max = temp;
+					playerHeros.clear(); //清空之前的高票用户名集合(不可以只用set(0,maxName)替换，原因：之前的高票用户可能为多个)
+					playerHeros.add(choosedName);//将高票用户名放到集合首部
+					logger.info("将票数最大者添加到集合首部后，playerHeros："+playerHeros);
+					logger.info("添加的用户名是："+choosedName);
+				}else if(temp == max){
+					playerHeros.add(choosedName); //票数相同，加进集合
+					logger.info("将票数最大者之一加入集合后，playerHeros："+playerHeros);
+					logger.info("添加的用户名是："+choosedName);
+				}
+			}
+			JSONObject resultList = JsonData.createJsonObject4("#投#票#结#束", null, playerHeros);
+			ug.sendMsgToOther(resultList);
+		}
+		
 	}
 
 	// 英雄放置的方法
@@ -329,7 +412,6 @@ public class GameServiceImpl {
 	// 制定英雄出牌的先后顺序      逻辑有问题
 	public void heroSort() {
 		logger.info("***[heroSort()开始执行，当前gameTable.arrangeOver："+gameTable.arrangeOver);
-		logger.error("***[heroSort()开始执行，当前gameTable.arrangeOver："+gameTable.arrangeOver);
 		logger.info("当前sortedHeros："+sortedHeros+"，"+sortedHeros.hashCode());
 		JSONObject jsonObject = null;
 		String heroname = null;
@@ -340,11 +422,16 @@ public class GameServiceImpl {
 			logger.info("并会在随后进行arrangeOver++");
 			gameTable.arrangeOver++;
 		}else{
-			logger.info("广播英雄出牌顺序结束，随后会结束heroSort()，当前gameTable.arrangeOver："+gameTable.arrangeOver+"，当前sortedHeros.size()："+sortedHeros.size());
+			logger.info("广播英雄出牌顺序结束，随后会结束heroSort()，并将arrangeOver置0，当前gameTable.arrangeOver："+gameTable.arrangeOver+"，当前sortedHeros.size()："+sortedHeros.size());
 			//进度******************
 			//释放资源
 			//#开#始#发#言      返回#发#言#结#束   发言两轮     顺序按照：usernames用户名集合
 			//#开#始#投#票      返回#投#票#结#束   返回票数最多用户名  票相同都返回
+			initCounter();
+			logger.info("guList:"+guList);
+			String username = usernames.get(gameTable.usernamesId); //获取用户名，用于广播发言
+			JSONObject speak = JsonData.createJsonObject5("#开#始#发#言", username);
+			ug.sendMsgToOther(speak);
 			return ;
 		}
 		
@@ -370,35 +457,48 @@ public class GameServiceImpl {
 		} else {
 			//临时修改(日后需完善)
 			if(playerHeros.size() == 0){
-				logger.info("当前sortedHeros11："+sortedHeros+"，"+sortedHeros.hashCode());
+				logger.info("1");
 				jsonObject = JsonData.createJsonObject8("#进#行#回#合", "狼群",userHeroMap, playerHeros);
 				ug.sendMsgToOther(jsonObject);
-				logger.info("当前sortedHeros12："+sortedHeros+"，"+sortedHeros.hashCode());
 				logger.info("[狼群为空，服务端随机延迟后自动进行向下广播]");
 				//生成一个5-10秒的随机数，并延迟相应秒数
 				Random random = new Random();
 				int delay = random.nextInt(5)+5;
-				logger.info("当前sortedHeros13："+sortedHeros+"，"+sortedHeros.hashCode());
 				try {
 					Thread.sleep(delay*1000);
-					logger.info("当前sortedHeros14："+sortedHeros+"，"+sortedHeros.hashCode());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} 
-				logger.info("当前sortedHeros15："+sortedHeros+"，"+sortedHeros.hashCode());
 				heroSort();
 			}else{
-				logger.info("当前sortedHeros2："+sortedHeros+"，"+sortedHeros.hashCode());
+				logger.info("2");
 				jsonObject = JsonData.createJsonObject8("#进#行#回#合", "狼群",userHeroMap, playerHeros);
-				logger.info("当前sortedHeros3："+sortedHeros+"，"+sortedHeros.hashCode());
+				logger.info("3");
 				ug.sendMsgToOther(jsonObject);
-				logger.info("当前sortedHeros4："+sortedHeros+"，"+sortedHeros.hashCode());
 			}
 		}
-	}		
+	}
+	
+	//判断GameTable类的三个计数器是否归0
+	public boolean counterIsInited(){
+		if(gameTable.chooseType==0 && gameTable.usernamesId==0 && gameTable.arrangeOver==0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	//初始化GameTable类的三个计数器
+	public void initCounter(){
+		gameTable.chooseType=0;
+		gameTable.usernamesId=0;
+		gameTable.arrangeOver=0;
+		logger.info("清理三大计数器完毕");
+	}
 
-	// 释放资源(服务端程序回归为无玩家的原始状态)
-	public void cleanSource() {
+	//日后需完善
+	// 释放资源(服务端程序回归为无玩家的原始状态) ，并没有实际用处，只是为了配合UserGame进行单个资源清理
+	public void closeSource() {
 		gameTable.chooseType = 0;
 		gameTable.usernamesId = 0;
 		gameTable.arrangeOver = 0;
