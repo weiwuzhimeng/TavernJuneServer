@@ -13,7 +13,10 @@ public class Configure {
 	
 	//玩家语音辩论发送端口
 	public static final int SPEECH_SEND_PORT = 9904;
-
+	
+	//用户交友聊天端口
+	public static final int USER_CHAT_PORT = 10000;
+	
 	//玩家数量
 	public static final int PLAYER_COUNT = 5;
 }

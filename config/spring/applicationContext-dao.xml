@@ -52,6 +52,10 @@
 	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="tc.mapper.UserMapper"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
-	</bean>  
+	</bean> 
+	<bean id="infoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="tc.mapper.InfoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean> 
 	
 </beans>

@@ -19,7 +19,7 @@
   	
   	<!-- 使用resultMap完成，表中字段和类属性的映射
 		type:resultMap最终映射的java对象，可以使用别名
-		id:resultMap的唯一标识，，resultMap中的id应该和select中的resultMap的类型一致
+		id:resultMap的唯一标识，resultMap中的id应该和select中的resultMap的类型一致
 		 -->
 	<resultMap type="tc.po.Forum" id="forumResultMap">
 		<!-- id:数据库中的主键的映射 

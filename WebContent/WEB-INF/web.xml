@@ -32,6 +32,9 @@
 	<listener>
 		<listener-class>tc.init.SpeechInit</listener-class>
 	</listener>
+	<listener>
+		<listener-class>tc.init.ChatInit</listener-class>
+	</listener>
 
 	<!-- spring前端控制器，声明DispatcherServlet -->
 	<!-- 默认自动加载/WEB-INF/smart-servlet.xml这个spring配置文件 -->

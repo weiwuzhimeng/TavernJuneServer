@@ -9,7 +9,7 @@ import tc.controller.GameFrontController;
 
 public class GameInit implements ServletContextListener{
 
-private static final Logger logger = Logger.getLogger(GameInit.class);
+	private static final Logger logger = Logger.getLogger(GameInit.class);
 	
 	Thread gameFront = null;
 	

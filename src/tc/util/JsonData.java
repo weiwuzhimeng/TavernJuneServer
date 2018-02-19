@@ -1,11 +1,13 @@
 package tc.util;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import tc.po.Info;
 
 
 public class JsonData {
@@ -145,6 +147,18 @@ public class JsonData {
 			jsonObject.put("msg1", msg1);
 			jsonObject.put("msg2", msg2);
 			jsonObject.put("msg3", msg3);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
+	public static JSONObject createJsonObject10(String msgType, List<Info> infoList) {
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("msgType", msgType);
+			JSONArray jsonArray = JSONArray.fromObject(infoList);
+			jsonObject.put("msg1", jsonArray);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

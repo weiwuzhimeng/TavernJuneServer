@@ -24,4 +24,25 @@
   		update user set picture=#{picture} where username = #{username};
   	</select>
   	
+  	<select id="selectNameById" parameterType="int" resultType="String">
+  		select username from user where id =#{id};
+  	</select>
+  	
+  	<select id="selectIdByName" parameterType="String" resultType="int">
+  		select id from user where username =#{username};
+  	</select>
+  	
+	<select id="selectRelateById" parameterType="int" resultType="Integer">
+		select remote_user_id from relate where local_user_id = #{localUserId};
+	</select>
+	
+	<select id="insertRelate" parameterType="int">
+  		insert relate (local_user_id,remote_user_id) values (#{id1},#{id2});
+  	</select>
+  	
+  	<!-- 返回的不是对象，不需要resultMap？？？ -->
+  	<!-- {}中若为简单类型，其中只能写value -->
+  	<select id="selectUserByName" parameterType="String" resultType="String">
+  		select username from user where username like '%${value}%';
+  	</select>
 </mapper>
