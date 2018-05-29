@@ -33,7 +33,7 @@ public interface UserMapper {
 	//请求添加好友
 	public void insertRelate(@Param("id1") int id1, @Param("id2") int id2);
 	
-	//搜索好友[模糊查询]
+	//搜索好友
 	public List<String> selectUserByName(String username);
 	
 }

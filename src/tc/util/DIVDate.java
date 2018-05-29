@@ -10,4 +10,5 @@ public class DIVDate {
 		String str=df.format(date);
 		return str;
 	}
+	
 }

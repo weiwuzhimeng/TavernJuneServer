@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import tc.po.NewsData;
+import net.sf.json.JSONObject;
 import tc.service.impl.NewsServiceImpl;
 
 //推送控制类
@@ -19,9 +19,9 @@ public class NewsController {
 	
 	//推送消息
 	@RequestMapping(value="/push",method={RequestMethod.POST,RequestMethod.GET})
-	public @ResponseBody NewsData pushNews() throws Exception{
-		NewsData newsData = newsServiceImpl.dealPush();
-		return newsData;
+	public @ResponseBody JSONObject pushNews() throws Exception{
+		JSONObject j = newsServiceImpl.dealPush();
+		return j;
 	}
 	
 }

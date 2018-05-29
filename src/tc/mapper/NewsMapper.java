@@ -1,5 +1,7 @@
 package tc.mapper;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import tc.po.News;
@@ -9,6 +11,6 @@ import tc.po.News;
 public interface NewsMapper {
 	
 	//根据id返回推送内容给用户
-	public News selectNewsById(int id) throws Exception;
+	public List<News> selectNews() throws Exception;
 	
 }

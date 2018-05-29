@@ -9,5 +9,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<mapper resource="tc/mapper/ForumMapper.xml"/>
 		<mapper resource="tc/mapper/UserMapper.xml"/>
 		<mapper resource="tc/mapper/InfoMapper.xml"/>
+		<mapper resource="tc/mapper/MessageMapper.xml"/>
 	</mappers>
 </configuration>

@@ -21,12 +21,12 @@
 		<result column="title" property="title"/>
 		<result column="description" property="description"/>
 		<result column="pic" property="pic"/>
-		<result column="date" property="date"/>
+		<result column="link" property="pic"/>
 	</resultMap>
 
 	<!-- 如果这里引用的是其他文件的map文件，resultMap参数需要加上namespace -->
-  	<select id="selectNewsById" parameterType="int" resultMap="newsResultMap">
-  		select id,title,description,pic,date from news where id = #{id};
+  	<select id="selectNews" resultMap="newsResultMap">
+  		select id,title,description,pic,link from news;
   	</select>
   	
 </mapper>

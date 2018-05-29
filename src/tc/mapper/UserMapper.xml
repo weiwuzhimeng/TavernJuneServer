@@ -29,7 +29,7 @@
   	</select>
   	
   	<select id="selectIdByName" parameterType="String" resultType="int">
-  		select id from user where username =#{username};
+  		select id from user where username = #{username};
   	</select>
   	
 	<select id="selectRelateById" parameterType="int" resultType="Integer">

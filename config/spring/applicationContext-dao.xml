@@ -41,7 +41,7 @@
 	但是此方法并不能批量生成mapper接口代理对象
 	-->
 	<bean id="newsMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<!-- mapperIntefece指定mapper接口 -->
+		<!-- mapperIntefece指定mapper接口  sqlSessionFactory不同，数据源就不同 -->
 		<property name="mapperInterface" value="tc.mapper.NewsMapper"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
 	</bean> 
@@ -55,6 +55,10 @@
 	</bean> 
 	<bean id="infoMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
 		<property name="mapperInterface" value="tc.mapper.InfoMapper"/>
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean> 
+	<bean id="messageMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="mapperInterface" value="tc.mapper.MessageMapper"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
 	</bean> 
 	

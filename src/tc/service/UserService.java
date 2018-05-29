@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import net.sf.json.JSONObject;
+
 //用户业务类
 public interface UserService {
 
@@ -14,13 +16,13 @@ public interface UserService {
 	public String dealRegister(String username,String password) throws Exception;
 	
 	//处理请求好友列表
-	public ArrayList<String> dealFriendsList(String username) throws Exception;
+	public JSONObject dealFriendsList(String username) throws Exception;
 	
 	//处理添加好友
 	public String dealAddFriend(String adder,String accepter) throws Exception;
 	
 	//处理搜索用户
-	public ArrayList<String> dealSearchUser(String username) throws Exception;
+	public JSONObject dealSearchUser(String username) throws Exception;
 	
 	//处理用户文件上传
 	public String dealPicUpload(MultipartFile picFile,String username) throws Exception;

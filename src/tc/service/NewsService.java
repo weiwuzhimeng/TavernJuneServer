@@ -1,9 +1,9 @@
 package tc.service;
 
-import tc.po.NewsData;
+import net.sf.json.JSONObject;
 
 public interface NewsService {
 
-	public NewsData dealPush() throws Exception;
+	public JSONObject dealPush() throws Exception;
 	
 }

@@ -9,5 +9,7 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/java-emoji-converter-0.1.1-sources.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/java-emoji-converter-0.1.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

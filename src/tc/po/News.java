@@ -9,7 +9,7 @@ public class News {
 	private String title;
 	private String description;
 	private String pic;
-	private Date date;
+	private String link;
 	
 	public int getId() {
 		return id;
@@ -29,24 +29,21 @@ public class News {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getLink() {
+		return link;
+	}
+	public void setLink(String link) {
+		this.link = link;
+	}
 	public String getPic() {
 		return pic;
 	}
 	public void setPic(String pic) {
 		this.pic = pic;
 	}
-	public Date getDate() {
-		return date;
-	}
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
 	@Override
 	public String toString() {
-		return "Item [id=" + id + ", title=" + title + ", description=" + description + ", pic=" + pic + ", date="
-				+ date + "]";
+		return "News [id=" + id + ", title=" + title + ", description=" + description + ", pic=" + pic + ", link="
+				+ link + "]";
 	}
-
-	
 }

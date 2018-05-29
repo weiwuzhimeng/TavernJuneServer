@@ -18,5 +18,5 @@ public class Configure {
 	public static final int USER_CHAT_PORT = 10000;
 	
 	//玩家数量
-	public static final int PLAYER_COUNT = 5;
+	public static final int PLAYER_COUNT = 2;
 }
